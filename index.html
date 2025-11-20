@@ -1,130 +1,150 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Котик, вибачиш мене?</title>
-  <style>
-    body {
-      background-color: #ffe6f2;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding-top: 80px;
-      overflow: hidden;
-      margin: 0;
-    }
-    h1 {
-      font-size: 40px;
-      color: #d63384;
-      text-shadow: 0 0 10px pink;
-    }
-    #cat {
-      width: 260px;
-      margin: 20px auto;
-      display: none;
-    }
-    .btn {
-      padding: 15px 30px;
-      font-size: 22px;
-      border: none;
-      border-radius: 15px;
-      cursor: pointer;
-      margin: 20px;
-      transition: 0.2s;
-    }
-    #yes { background-color: #ff80b3; color: white; }
-    #no { background-color: #999; color: white; position: absolute; }
-    .heart {
-      position: fixed;
-      top: -50px;
-      color: red;
-      font-size: 20px;
-      animation: fall 3.5s linear forwards;
-      pointer-events: none;
-    }
-    @keyframes fall {
-      from { transform: translateY(0); }
-      to  { transform: translateY(120vh); }
-    }
-    
-    /* НОВИЙ СТИЛЬ: Робимо YouTube плеєр повністю невидимим */
-    #youtubePlayer {
-        /* Приховує елемент, але залишає його доступним для JS */
-        display: none; 
-        /* Робить його мінімальним за розміром */
-        width: 1px;
-        height: 1px;
-        /* Розміщує його десь поза екраном, щоб він точно не заважав */
-        position: fixed;
-        left: -9999px;
-        top: -9999px;
-        /* Переконаємось, що він не має жодного відступу чи рамки */
-        margin: 0;
-        padding: 0;
-        border: none;
-        opacity: 0; /* Додатковий рівень приховування */
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Котик, вибачиш мене?</title>
+  <style>
+    body {
+      background-color: #ffe6f2;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 80px;
+      overflow: hidden;
+      margin: 0;
+    }
+    h1 {
+      font-size: 40px;
+      color: #d63384;
+      text-shadow: 0 0 10px pink;
+    }
+    #cat {
+      width: 260px;
+      margin: 20px auto;
+      display: none;
+    }
+    .btn {
+      padding: 15px 30px;
+      font-size: 22px;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      margin: 20px;
+      transition: 0.2s;
+    }
+    #yes { background-color: #ff80b3; color: white; }
+    #no { background-color: #999; color: white; position: absolute; }
+    .heart {
+      position: fixed;
+      top: -50px;
+      color: red;
+      font-size: 20px;
+      animation: fall 3.5s linear forwards;
+      pointer-events: none;
+    }
+    @keyframes fall {
+      from { transform: translateY(0); }
+      to  { transform: translateY(120vh); }
+    }
+    
+    /* Стиль для приховування плеєра */
+    #youtubePlayerIframe {
+        display: none; 
+        width: 1px;
+        height: 1px;
+        position: fixed;
+        left: -9999px;
+        top: -9999px;
+        margin: 0;
+        padding: 0;
+        border: none;
+        opacity: 0;
+    }
+  </style>
+    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
 
-  <iframe 
-    id="youtubePlayer"
-    src="https://www.youtube.com/embed/sElE_BfQ67s?autoplay=1&loop=1&playlist=sElE_BfQ67s&controls=0&mute=0&rel=0"
-    frameborder="0" 
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen>
-  </iframe>
+    <iframe 
+    id="youtubePlayerIframe"
+    src="https://www.youtube.com/embed/sElE_BfQ67s?enablejsapi=1&loop=1&playlist=sElE_BfQ67s&controls=0&mute=0&rel=0"
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen>
+  </iframe>
 
-  <h1 id="question">Кохана, ти мене вибачиш? ❤️</h1>
-  <img id="cat" src="cat.jpg">
+  <h1 id="question">Кохана, ти мене вибачиш? ❤️</h1>
+  <img id="cat" src="cat.jpg">
 
-  <button class="btn" id="yes">Да, любімчик мій ❤️</button>
-  <button class="btn" id="no">Ні</button>
+  <button class="btn" id="yes">Да, любімчик мій ❤️</button>
+  <button class="btn" id="no">Ні</button>
 
 <script>
 const noBtn = document.getElementById("no");
 const yesBtn = document.getElementById("yes");
-const youtubePlayer = document.getElementById("youtubePlayer");
+const youtubePlayerIframe = document.getElementById("youtubePlayerIframe");
+let player;
+
+// ⭐️ КРОК 3: Ініціалізуємо YouTube Player через API, коли API буде готове.
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('youtubePlayerIframe', {
+    // Вказуємо ID елемента, в який буде вбудовано плеєр
+    // (насправді, API просто керує вже існуючим iframe)
+    events: {
+      'onReady': onPlayerReady
+    }
+  });
+}
+
+function onPlayerReady(event) {
+    // Рекомендується заглушити на старті, щоб точно обійти блокування браузерів
+    event.target.mute(); 
+}
 
 document.addEventListener("mousemove", (e) => {
-  const rect = noBtn.getBoundingClientRect();
-  const dist = Math.hypot(
-    e.clientX - (rect.left + rect.width/2),
-    e.clientY - (rect.top + rect.height/2)
-  );
-  if (dist < 130) {
-    noBtn.style.left = Math.random() * (window.innerWidth - rect.width) + "px";
-    noBtn.style.top = Math.random() * (window.innerHeight - rect.height) + "px";
-  }
+  const rect = noBtn.getBoundingClientRect();
+  const dist = Math.hypot(
+    e.clientX - (rect.left + rect.width/2),
+    e.clientY - (rect.top + rect.height/2)
+  );
+  if (dist < 130) {
+    noBtn.style.left = Math.random() * (window.innerWidth - rect.width) + "px";
+    noBtn.style.top = Math.random() * (window.innerHeight - rect.height) + "px";
+  }
 });
 
 function createHeart() {
-  const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.textContent = "❤️";
-  heart.style.left = Math.random()*100 + "vw";
-  heart.style.fontSize = (20+Math.random()*20)+"px";
-  document.body.appendChild(heart);
-  setTimeout(()=>heart.remove(),4000);
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.textContent = "❤️";
+  heart.style.left = Math.random()*100 + "vw";
+  heart.style.fontSize = (20+Math.random()*20)+"px";
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(),4000);
 }
 
 document.getElementById("yes").onclick = () => {
-  document.getElementById("question").innerText = "Дякую, я тебе дуже сильно люблю ❤️";
-  document.getElementById("cat").style.display = "block";
-  
-  // Робимо плеєр видимим (хоча він прихований CSS), що ініціює автозапуск
-  youtubePlayer.style.display = "block";
-  
-  setInterval(createHeart,120);
-  
-  // Видаляємо кнопки після натискання
-  yesBtn.remove();
-  noBtn.remove();
+  document.getElementById("question").innerText = "Дякую, я тебе дуже сильно люблю ❤️";
+  document.getElementById("cat").style.display = "block";
+  
+  // ⭐️ КРОК 4: Викликаємо playVideo() та unMute() лише після кліку.
+  // Це вважається "жестом користувача" і обходить блокування браузерами.
+  if (player) {
+      player.unMute(); 
+      player.playVideo();
+  }
+  
+  youtubePlayerIframe.style.display = "block"; // Робимо "видимим", хоча він все ще прихований CSS стилями
+  
+  setInterval(createHeart,120);
+  
+  // Видаляємо кнопки після натискання
+  yesBtn.remove();
+  noBtn.remove();
 };
 
 document.getElementById("no").onclick = () => {
-  alert("Ні, кот, так не піде 😾");
-  location.reload();
+  alert("Ні, кот, так не піде 😾");
+  location.reload();
 };
 </script>
 </body>
