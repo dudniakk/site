@@ -46,23 +46,30 @@
       to  { transform: translateY(120vh); }
     }
     
-    /* Повертаємо вихідний, повністю прихований стиль */
-    #hiddenPlayer {
+    /* НОВИЙ СТИЛЬ: Робимо YouTube плеєр повністю невидимим */
+    #youtubePlayer {
+        /* Приховує елемент, але залишає його доступним для JS */
         display: none; 
+        /* Робить його мінімальним за розміром */
         width: 1px;
         height: 1px;
+        /* Розміщує його десь поза екраном, щоб він точно не заважав */
         position: fixed;
         left: -9999px;
         top: -9999px;
-        opacity: 0;
+        /* Переконаємось, що він не має жодного відступу чи рамки */
+        margin: 0;
+        padding: 0;
+        border: none;
+        opacity: 0; /* Додатковий рівень приховування */
     }
   </style>
 </head>
 <body>
 
-    <iframe 
-    id="hiddenPlayer"
-    src="https://www.youtube.com/embed/sElE_BfQ67s?loop=1&playlist=sElE_BfQ67s&controls=0&mute=1&rel=0"
+  <iframe 
+    id="youtubePlayer"
+    src="https://www.youtube.com/embed/sElE_BfQ67s?autoplay=1&loop=1&playlist=sElE_BfQ67s&controls=0&mute=0&rel=0"
     frameborder="0" 
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     allowfullscreen>
@@ -77,8 +84,7 @@
 <script>
 const noBtn = document.getElementById("no");
 const yesBtn = document.getElementById("yes");
-// Отримуємо посилання на прихований плеєр
-const hiddenPlayer = document.getElementById("hiddenPlayer");
+const youtubePlayer = document.getElementById("youtubePlayer");
 
 document.addEventListener("mousemove", (e) => {
   const rect = noBtn.getBoundingClientRect();
@@ -106,12 +112,9 @@ document.getElementById("yes").onclick = () => {
   document.getElementById("question").innerText = "Дякую, я тебе дуже сильно люблю ❤️";
   document.getElementById("cat").style.display = "block";
   
-  // ⭐️ КРОК ВИПРАВЛЕННЯ: Робимо плеєр видимим і оновлюємо його SRC 
-  // з параметрами autoplay=1 та mute=0 (зі звуком)
-  // Браузер дозволить це, оскільки це відбувається в результаті кліку користувача.
-  hiddenPlayer.style.display = "block";
-  hiddenPlayer.src = "https://www.youtube.com/embed/sElE_BfQ67s?autoplay=1&loop=1&playlist=sElE_BfQ67s&controls=0&mute=0&rel=0";
-
+  // Робимо плеєр видимим (хоча він прихований CSS), що ініціює автозапуск
+  youtubePlayer.style.display = "block";
+  
   setInterval(createHeart,120);
   
   // Видаляємо кнопки після натискання
@@ -126,3 +129,4 @@ document.getElementById("no").onclick = () => {
 </script>
 </body>
 </html>
+чому не працює мзуика на сайті?
