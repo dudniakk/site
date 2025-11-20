@@ -45,12 +45,23 @@
       from { transform: translateY(0); }
       to  { transform: translateY(120vh); }
     }
-    /* Додатковий стиль для приховування YouTube плеєра, доки він не потрібен */
+    
+    /* НОВИЙ СТИЛЬ: Робимо YouTube плеєр повністю невидимим */
     #youtubePlayer {
-        display: none;
-        margin-top: 20px;
-        width: 0; /* Приховуємо його розміри */
-        height: 0;
+        /* Приховує елемент, але залишає його доступним для JS */
+        display: none; 
+        /* Робить його мінімальним за розміром */
+        width: 1px;
+        height: 1px;
+        /* Розміщує його десь поза екраном, щоб він точно не заважав */
+        position: fixed;
+        left: -9999px;
+        top: -9999px;
+        /* Переконаємось, що він не має жодного відступу чи рамки */
+        margin: 0;
+        padding: 0;
+        border: none;
+        opacity: 0; /* Додатковий рівень приховування */
     }
   </style>
 </head>
@@ -72,6 +83,7 @@
 
 <script>
 const noBtn = document.getElementById("no");
+const yesBtn = document.getElementById("yes");
 const youtubePlayer = document.getElementById("youtubePlayer");
 
 document.addEventListener("mousemove", (e) => {
@@ -100,15 +112,14 @@ document.getElementById("yes").onclick = () => {
   document.getElementById("question").innerText = "Я знав, моє сонечко ❤️";
   document.getElementById("cat").style.display = "block";
   
-  // 1. Прихований плеєр YouTube з id="youtubePlayer" запускається параметром autoplay=1 у src.
-  // 2. Його просто треба відобразити (хоча його розміри 0x0, звук почнеться).
+  // Робимо плеєр видимим (хоча він прихований CSS), що ініціює автозапуск
   youtubePlayer.style.display = "block";
   
   setInterval(createHeart,120);
   
-  // Видаляємо кнопки, щоб залишилося лише кохання
-  document.getElementById("yes").remove();
-  document.getElementById("no").remove();
+  // Видаляємо кнопки після натискання
+  yesBtn.remove();
+  noBtn.remove();
 };
 
 document.getElementById("no").onclick = () => {
