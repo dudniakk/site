@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Кохана, вибачиш?</title>
+  <style>
+    body {
+      background-color: #ffe6f2;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 80px;
+      overflow: hidden;
+      margin: 0;
+    }
+    h1 {
+      font-size: 40px;
+      color: #d63384;
+      text-shadow: 0 0 10px pink;
+    }
+    #cat {
+      width: 260px;
+      margin: 20px auto;
+      display: none;
+    }
+    .btn {
+      padding: 15px 30px;
+      font-size: 22px;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      margin: 20px;
+      transition: 0.2s;
+    }
+    #yes { background-color: #ff80b3; color: white; }
+    #no { background-color: #999; color: white; position: absolute; }
+    .heart {
+      position: fixed;
+      top: -50px;
+      color: red;
+      font-size: 20px;
+      animation: fall 3.5s linear forwards;
+      pointer-events: none;
+    }
+    @keyframes fall {
+      from { transform: translateY(0); }
+      to   { transform: translateY(120vh); }
+    }
+  </style>
+</head>
+<body>
+
+  <audio id="bgMusic" loop>
+    <source src="https://filesamples.com/samples/audio/mp3/sample3.mp3" type="audio/mpeg">
+  </audio>
+
+  <h1 id="question">Кохана, ти мене вибачиш? ❤️</h1>
+  <img id="cat" src="cat.jpg">
+
+  <button class="btn" id="yes">Так, коханий ❤️</button>
+  <button class="btn" id="no">Ні</button>
+
+<script>
+const noBtn = document.getElementById("no");
+
+document.addEventListener("mousemove", (e) => {
+  const rect = noBtn.getBoundingClientRect();
+  const dist = Math.hypot(
+    e.clientX - (rect.left + rect.width/2),
+    e.clientY - (rect.top + rect.height/2)
+  );
+  if (dist < 130) {
+    noBtn.style.left = Math.random() * (window.innerWidth - rect.width) + "px";
+    noBtn.style.top = Math.random() * (window.innerHeight - rect.height) + "px";
+  }
+});
+
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.textContent = "❤️";
+  heart.style.left = Math.random()*100 + "vw";
+  heart.style.fontSize = (20+Math.random()*20)+"px";
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(),4000);
+}
+
+document.getElementById("yes").onclick = () => {
+  document.getElementById("question").innerText = "Я знав, моє сонечко ❤️";
+  document.getElementById("cat").style.display = "block";
+  document.getElementById("bgMusic").play();
+  setInterval(createHeart,120);
+};
+
+document.getElementById("no").onclick = () => {
+  alert("Ні, кот, так не піде 😾");
+  location.reload();
+};
+</script>
+</body>
+</html>
