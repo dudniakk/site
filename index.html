@@ -43,15 +43,26 @@
     }
     @keyframes fall {
       from { transform: translateY(0); }
-      to   { transform: translateY(120vh); }
+      to  { transform: translateY(120vh); }
+    }
+    /* Додатковий стиль для приховування YouTube плеєра, доки він не потрібен */
+    #youtubePlayer {
+        display: none;
+        margin-top: 20px;
+        width: 0; /* Приховуємо його розміри */
+        height: 0;
     }
   </style>
 </head>
 <body>
 
-  <audio id="bgMusic" loop>
-    <source src="https://music.apple.com/ru/album/apocalypse/1217977525?i=1217977755" type="audio/mpeg">
-  </audio>
+  <iframe 
+    id="youtubePlayer"
+    src="https://www.youtube.com/embed/sElE_BfQ67s?autoplay=1&loop=1&playlist=sElE_BfQ67s&controls=0&mute=0&rel=0"
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen>
+  </iframe>
 
   <h1 id="question">Кохана, ти мене вибачиш? ❤️</h1>
   <img id="cat" src="cat.jpg">
@@ -61,6 +72,7 @@
 
 <script>
 const noBtn = document.getElementById("no");
+const youtubePlayer = document.getElementById("youtubePlayer");
 
 document.addEventListener("mousemove", (e) => {
   const rect = noBtn.getBoundingClientRect();
@@ -87,8 +99,16 @@ function createHeart() {
 document.getElementById("yes").onclick = () => {
   document.getElementById("question").innerText = "Я знав, моє сонечко ❤️";
   document.getElementById("cat").style.display = "block";
-  document.getElementById("bgMusic").play();
+  
+  // 1. Прихований плеєр YouTube з id="youtubePlayer" запускається параметром autoplay=1 у src.
+  // 2. Його просто треба відобразити (хоча його розміри 0x0, звук почнеться).
+  youtubePlayer.style.display = "block";
+  
   setInterval(createHeart,120);
+  
+  // Видаляємо кнопки, щоб залишилося лише кохання
+  document.getElementById("yes").remove();
+  document.getElementById("no").remove();
 };
 
 document.getElementById("no").onclick = () => {
