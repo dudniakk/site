@@ -46,27 +46,23 @@
       to  { transform: translateY(120vh); }
     }
     
-    /* Стиль для приховування плеєра */
-    #youtubePlayerIframe {
+    /* Повертаємо вихідний, повністю прихований стиль */
+    #hiddenPlayer {
         display: none; 
         width: 1px;
         height: 1px;
         position: fixed;
         left: -9999px;
         top: -9999px;
-        margin: 0;
-        padding: 0;
-        border: none;
         opacity: 0;
     }
   </style>
-    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
 
     <iframe 
-    id="youtubePlayerIframe"
-    src="https://www.youtube.com/embed/sElE_BfQ67s?enablejsapi=1&loop=1&playlist=sElE_BfQ67s&controls=0&mute=0&rel=0"
+    id="hiddenPlayer"
+    src="https://www.youtube.com/embed/sElE_BfQ67s?loop=1&playlist=sElE_BfQ67s&controls=0&mute=1&rel=0"
     frameborder="0" 
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     allowfullscreen>
@@ -81,24 +77,8 @@
 <script>
 const noBtn = document.getElementById("no");
 const yesBtn = document.getElementById("yes");
-const youtubePlayerIframe = document.getElementById("youtubePlayerIframe");
-let player;
-
-// ⭐️ КРОК 3: Ініціалізуємо YouTube Player через API, коли API буде готове.
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('youtubePlayerIframe', {
-    // Вказуємо ID елемента, в який буде вбудовано плеєр
-    // (насправді, API просто керує вже існуючим iframe)
-    events: {
-      'onReady': onPlayerReady
-    }
-  });
-}
-
-function onPlayerReady(event) {
-    // Рекомендується заглушити на старті, щоб точно обійти блокування браузерів
-    event.target.mute(); 
-}
+// Отримуємо посилання на прихований плеєр
+const hiddenPlayer = document.getElementById("hiddenPlayer");
 
 document.addEventListener("mousemove", (e) => {
   const rect = noBtn.getBoundingClientRect();
@@ -126,15 +106,12 @@ document.getElementById("yes").onclick = () => {
   document.getElementById("question").innerText = "Дякую, я тебе дуже сильно люблю ❤️";
   document.getElementById("cat").style.display = "block";
   
-  // ⭐️ КРОК 4: Викликаємо playVideo() та unMute() лише після кліку.
-  // Це вважається "жестом користувача" і обходить блокування браузерами.
-  if (player) {
-      player.unMute(); 
-      player.playVideo();
-  }
-  
-  youtubePlayerIframe.style.display = "block"; // Робимо "видимим", хоча він все ще прихований CSS стилями
-  
+  // ⭐️ КРОК ВИПРАВЛЕННЯ: Робимо плеєр видимим і оновлюємо його SRC 
+  // з параметрами autoplay=1 та mute=0 (зі звуком)
+  // Браузер дозволить це, оскільки це відбувається в результаті кліку користувача.
+  hiddenPlayer.style.display = "block";
+  hiddenPlayer.src = "https://www.youtube.com/embed/sElE_BfQ67s?autoplay=1&loop=1&playlist=sElE_BfQ67s&controls=0&mute=0&rel=0";
+
   setInterval(createHeart,120);
   
   // Видаляємо кнопки після натискання
